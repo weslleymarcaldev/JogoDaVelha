@@ -1,19 +1,31 @@
 {
-  "name": "react.dev",
-  "version": "0.0.0",
-  "main": "/src/index.js",
+  "name": "jogo-da-velha",
+  "version": "1.0.0",
+  "main": "index.js",
   "scripts": {
-    "start": "react-scripts start",
+    "start": "react-scripts start --openssl-legacy-provider",
     "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
+    "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
-  "dependencies": {
-    "react": "^18.0.0",
-    "react-dom": "^18.0.0",
-    "react-scripts": "^5.0.0"
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/weslleymarcaldev/Square.git"
   },
-  "devDependencies": {},
+  "author": "Weslley Marçal",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/weslleymarcaldev/Square/issues"
+  },
+  "homepage": "http://192.168.56.1:4000",
+  "dependencies": {
+    "build": "^0.1.4",
+    "dependence": "^1.1.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-scripts": "^5.0.1",
+    "rimraf": "^6.0.1"
+  },
   "browserslist": {
     "production": [
       ">0.2%",
@@ -25,5 +37,10 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  }
+  },
+  "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11"
+  },
+  "keywords": [],
+  "description": ""
 }
