@@ -1,81 +1,84 @@
 import {useState} from "react";
 
-function Square({value, onSquareClick}) {
+function Square({value, cliqueNoQuadrado}) {
   return (
-    <button className="square" onClick={onSquareClick}>
+    <button className="square" onClick={cliqueNoQuadrado}>
       {value}
     </button>
   );
 }
     
-function Board({xIsNext, squares, onPlay}) {
-  function handleClick(i){
-    if (squares[i] || calculateWinner(squares)) {
+function Board({xEoProximo, quadrados, emJogo}) {
+  function alcaClique(i){
+    if (calcularVencedor(quadrados) || quadrados[i]) {
       return;
     }
-    const nextSquares = squares.slice();
-    if (xIsNext){
-      nextSquares[i] = "x"
+    const ProximosQuadrados = quadrados.slice();
+    if (xEoProximo){
+      ProximosQuadrados[i] = "x"
     } 
     else {
-      nextSquares[i] = "0";
+      ProximosQuadrados[i] = "0";
     }    
-    onPlay(nextSquares);
+    emJogo(ProximosQuadrados);
   
   }
-  const winner = calculateWinner(squares);
+  const ganhador = calcularVencedor(quadrados);
   let status;
-  if (winner) {
-    status = "Vitória: " + winner;
+  if (ganhador) {
+    status = "Vitória: " + ganhador;
   } else {
-    status = "Próximo jogador: " + (xIsNext ? "X" : "0");
+    status = "Próximo jogador: " + (xEoProximo ? "X" : "0");
   }
 
   return (
     <>
     <div className="status">{status}</div>
-    <div className="board-row">
-      <Square value={squares[0]} onSquareClick={() => handleClick(0)} />
-      <Square value={squares[1]} onSquareClick={() => handleClick(1)} />
-      <Square value={squares[2]} onSquareClick={() => handleClick(2)} />
+    <div className="board-row"> {/* board-row = linha de tabuleiro */}
+      <Square value={quadrados[0]} cliqueNoQuadrado={() => alcaClique(0)} />
+      <Square value={quadrados[1]} cliqueNoQuadrado={() => alcaClique(1)} />
+      <Square value={quadrados[2]} cliqueNoQuadrado={() => alcaClique(2)} />
     </div>
     <div className="board-row">
-      <Square value={squares[3]} onSquareClick={() => handleClick(3)} />
-      <Square value={squares[4]} onSquareClick={() => handleClick(4)} />
-      <Square value={squares[5]} onSquareClick={() => handleClick(5)} />
+      <Square value={quadrados[3]} cliqueNoQuadrado={() => alcaClique(3)} />
+      <Square value={quadrados[4]} cliqueNoQuadrado={() => alcaClique(4)} />
+      <Square value={quadrados[5]} cliqueNoQuadrado={() => alcaClique(5)} />
     </div>
     <div className="board-row">
-      <Square value={squares[6]} onSquareClick={() => handleClick(6)} />
-      <Square value={squares[7]} onSquareClick={() => handleClick(7)} />
-      <Square value={squares[8]} onSquareClick={() => handleClick(8)} />
+      <Square value={quadrados[6]} cliqueNoQuadrado={() => alcaClique(6)} />
+      <Square value={quadrados[7]} cliqueNoQuadrado={() => alcaClique(7)} />
+      <Square value={quadrados[8]} cliqueNoQuadrado={() => alcaClique(8)} />
     </div>
     </>
   );
 }
 
-export default function Game() {
-  const [xIsNext, setXIsNext] = useState(true);
-  const [history, setHistory] = useState([Array(9).fill(null)]);
-  const currentSquares = history[history.length - 1];
-  const [squares, setSquares] = useState(Array(9).fill(null));
-  const currentSqueres = history[history.length - 1];
-  function handlePlay(nextSquares){
-    setHistory([...history, nextSquares]);
-    setXIsNext(!xIsNext);
+export default function Jogo() {
+  const [historia, definirHistorico] = useState([Array(9).fill(null)]);
+  const [movimentoAtual, definirMovimentoAtual] =  useState(0)
+  const xEoProximo = movimentoAtual % 2 == 0;
+  const quadradosAtuais = historia[movimentoAtual];
+
+  function lidarComOJogo(ProximosQuadrados){
+    const proximaHistoria = [...historia.slice(0, movimentoAtual + 1), ProximosQuadrados];
+    definirHistorico(proximaHistoria);
+    definirMovimentoAtual(proximaHistoria.length - 1);
   }
-  function jumpTo(nextMove){
-    // TODO
+  
+  function pularPara(proximoMovimento){
+    definirMovimentoAtual(proximoMovimento);
   }
-  const moves =  history.map((squares, move) => {
-    let description;
-    if (move > 0) {
-      description = 'Ir para mover #' + move;
+
+  const movimentos =  historia.map((quadrados, mover) => {
+    let descricao;
+    if (mover > 0) {
+      descricao = 'Ir para mover #' + mover;
     } else {
-      description = 'Ir para o início do jogo';
+      descricao = 'Ir para o início do jogo';
     }
     return (
-      <li key={move}>
-        <button onClick={() => jumpTo(move)}>{description}</button>
+      <li key={mover}>
+        <button onClick={() => pularPara(mover)}>{descricao}</button>
       </li>
     );
   });
@@ -83,17 +86,17 @@ export default function Game() {
   return (
     <div className="game">
       <div className="game-board">
-        <Board xIsNext={xIsNext} squares={currentSquares} onPlay={handlePlay} />
+        <Board xEoProximo={xEoProximo} quadrados={quadradosAtuais} emJogo={lidarComOJogo} />
       </div>
       <div className="game-info">
-        <ol>{moves}</ol>
+        <ol>{movimentos}</ol>
       </div>
     </div>
   );
 }
 
-function calculateWinner(squares) {
-  const lines = [
+function calcularVencedor(quadrados) {
+  const linhas = [
     [0, 1, 2],
     [3, 4, 5],
     [6, 7, 8],
@@ -103,10 +106,10 @@ function calculateWinner(squares) {
     [0, 4, 8],
     [2, 4, 6],
   ];
-  for (let i = 0; i < lines.length; i++) {
-    const [a, b, c] =  lines[i];
-    if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-      return squares[a];
+  for (let i = 0; i < linhas.length; i++) {
+    const [a, b, c] = linhas[i];
+    if (quadrados[a] && quadrados[a] === quadrados[b] && quadrados[a] === quadrados[c]) {
+      return quadrados[a];
     }
   }
   return null;
