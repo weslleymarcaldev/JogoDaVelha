@@ -1,6 +1,6 @@
 import {useState} from "react";
 
-function Square({value, cliqueNoQuadrado}) {
+function Square({value, cliqueNoQuadrado}) { {/* Square = Quadrado */}
   return (
     <button className="square" onClick={cliqueNoQuadrado}>
       {value}
@@ -8,7 +8,7 @@ function Square({value, cliqueNoQuadrado}) {
   );
 }
     
-function Board({xEoProximo, quadrados, emJogo}) {
+function Board({xEoProximo, quadrados, emJogo}) { {/* Board = Tabuleiro */}
   function alcaClique(i){
     if (calcularVencedor(quadrados) || quadrados[i]) {
       return;
